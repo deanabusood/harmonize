@@ -1,22 +1,22 @@
-import axios from "axios";
 import React, { useState } from "react";
+import axios from "axios";
 
-function SearchBar() {
-  const [movieTitle, setmovieTitle] = useState("");
+function SearchBar({ onSearch }) {
+  const [movieTitle, setMovieTitle] = useState("");
 
   const handleInputChange = (event) => {
-    setmovieTitle(event.target.value);
+    setMovieTitle(event.target.value);
   };
 
-  //take in user movie title input and calls movie api - goal: retrieve movie's genres
   const handleSearch = async () => {
     try {
       const response = await axios.get("http://localhost:8000/search-movies", {
         params: { query: movieTitle },
       });
 
-      //handle api response data
-      console.log(response.data);
+      const results = response.data.results;
+      const genreIds = results.map((result) => result.genre_ids);
+      onSearch(results, genreIds);
     } catch (error) {
       console.error(error);
     }
@@ -24,13 +24,8 @@ function SearchBar() {
 
   return (
     <div>
-      <input
-        type="text"
-        placeholder="Enter a movie title"
-        value={movieTitle}
-        onChange={handleInputChange}
-      />
-      <button onClick={handleSearch}>Generate</button>
+      <input type="text" value={movieTitle} onChange={handleInputChange} />
+      <button onClick={handleSearch}>Search</button>
     </div>
   );
 }
