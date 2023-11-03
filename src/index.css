@@ -1,0 +1,42 @@
+/* App */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* SearchBar */
+.search-bar {
+}
+
+/* ResultsDisplay */
+.results-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  list-style: none;
+  padding: 0;
+}
+
+.result-item {
+  width: calc(20% - 20px);
+  margin: 10px;
+  text-align: center;
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.result-item img {
+  max-width: 100%;
+  max-height: 150px;
+  object-fit: contain;
+}
+
+.result-details {
+  margin-top: 10px;
+}
