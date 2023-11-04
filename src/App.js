@@ -3,29 +3,30 @@ import SearchBar from "./components/SearchBar";
 import ResultsDisplay from "./components/ResultsDisplay";
 
 function App() {
-  const [searchResults, setSearchResults] = useState([]);
+  const [movieResults, setMovieResults] = useState([]);
   const [genreIds, setGenreIds] = useState([]);
 
-  const handleSearch = (results, genres) => {
-    setSearchResults(results);
+  const handleMovieSearch = (results, genres) => {
+    setMovieResults(results);
     setGenreIds(genres);
   };
 
   const handleMovieClick = (index) => {
     const selectedGenres = genreIds[index];
-    console.log("Genres:", selectedGenres);
+    console.log("Movie ID:", selectedGenres);
   };
 
   return (
     <div className="app-container">
-      <SearchBar onSearch={handleSearch} />
-      {searchResults.length > 0 && (
+      <SearchBar handleMovieSearch={handleMovieSearch} />
+      {movieResults.length > 0 && (
         <ResultsDisplay
-          searchResults={searchResults}
+          searchResults={movieResults}
           genreIds={genreIds}
-          onMovieClick={handleMovieClick}
+          onMovieGenerate={handleMovieClick}
         />
       )}
+      {/* {used for spotify api with same resultsdisplay component} */}
     </div>
   );
 }
