@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { searchMovies } from "../services/ApiService";
 
 function SearchBar({ handleMovieSearch }) {
   const [movieTitle, setMovieTitle] = useState("");
@@ -10,18 +10,9 @@ function SearchBar({ handleMovieSearch }) {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/search-movies", {
-        params: { query: movieTitle },
-      });
-      //get results data
-      const results = response.data.results;
-      //filter results to check if it contains genre id
-      const filteredResults = results.filter(
-        (result) => result.genre_ids && result.genre_ids.length > 0
-      );
-      const genreIds = filteredResults.map((result) => result.genre_ids);
+      const { results, genreIds } = await searchMovies(movieTitle); // call ApiService.js
 
-      handleMovieSearch(filteredResults, genreIds);
+      handleMovieSearch(results, genreIds);
     } catch (error) {
       console.error(error);
     }
