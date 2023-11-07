@@ -2,6 +2,7 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:8000"; // server running on port 8000
 
+//TMDB API
 export async function searchMovies(query) {
   try {
     const response = await axios.get(`${BASE_URL}/search-movies`, {
@@ -22,4 +23,22 @@ export async function searchMovies(query) {
   }
 }
 
-export async function searchSpotify(query) {}
+//SPOTIFY API
+export async function searchSpotifyRecommendations(seedGenres) {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/get-spotify-recommendations`,
+      {
+        params: {
+          seed_genres: seedGenres,
+          limit: 20, //fixed at 20
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

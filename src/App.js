@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import SearchBar from "./components/SearchBar";
 import ResultsDisplay from "./components/ResultsDisplay";
 import genreMap from "./util/genreMap";
+import { searchSpotifyRecommendations } from "./services/ApiService";
 
 function App() {
   // state variables and SearchBar.jsx functionality
@@ -19,7 +20,7 @@ function App() {
     return selectedGenres;
   }
 
-  const handleGenerateClick = (index) => {
+  const handleGenerateClick = async (index) => {
     const isConfirmed = window.confirm(
       "Are you sure you want to generate songs similar to this movie?"
     );
@@ -27,11 +28,20 @@ function App() {
     if (isConfirmed) {
       const selectedGenres = convertMovieGenreToMusicGenre(index); // temp variable, not saved
       console.log(selectedGenres);
-      //spotify api call
+      try {
+        const recommendations = await searchSpotifyRecommendations(
+          selectedGenres
+        );
+        console.log(recommendations);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
+  // TO DO
   //spotify results
+  //spotify api request
   // create state var to pass into resultsdisplay
 
   return (

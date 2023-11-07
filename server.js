@@ -25,22 +25,58 @@ app.get("/search-movies", async (req, res) => {
   }
 });
 
-// app.get("/search-spotify", async (req, res) => {
-//   try {
-//     const { query } = req.query; // use spotify genres from movie
+//SPOTIFY - request access token using client id and secret
+const getAccessToken = async () => {
+  try {
+    const clientId = process.env.SPOTIFY_CLIENT_ID;
+    const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+    const authorizationString = clientId + ":" + clientSecret;
 
-//     // spotify api endpoint
-//     const url = `https://api.spotify.com/v1/recommendations?limit=1&seed_genres=${query}`;
-//     const headers = {
-//       Authorization: `Bearer ${process.env.SPOTIFY_BEARER_TOKEN}`,
-//     };
+    // post request to obtain access token
+    const response = await axios({
+      method: "post",
+      url: "https://accounts.spotify.com/api/token",
+      headers: {
+        Authorization: `Basic ${Buffer.from(authorizationString).toString(
+          "base64"
+        )}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: "grant_type=client_credentials",
+    });
 
-//     const response = await axios.get(url, { headers });
+    const accessToken = response.data.access_token;
 
-//     res.json(response.data);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// });
+    return accessToken;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+app.get("/get-spotify-recommendations", async (req, res) => {
+  try {
+    const { seed_genres, limit } = req.query; //selectedGenres, 20
+    const accessToken = await getAccessToken();
+
+    // get request to spotify recommendations endpoint using the access token
+    const response = await axios.get(
+      "https://api.spotify.com/v1/recommendations",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: {
+          seed_genres,
+          limit,
+        },
+      }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+});
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
