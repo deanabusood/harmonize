@@ -16,7 +16,7 @@ function App() {
 
   //ResultsDisplay.jsx functionality
   function convertMovieGenreToMusicGenre(index) {
-    const selectedGenres = genreIds[index].map((id) => genreMap[id]).join(", ");
+    const selectedGenres = genreIds[index].map((id) => genreMap[id]).join(",");
     return selectedGenres;
   }
 
@@ -27,11 +27,12 @@ function App() {
 
     if (isConfirmed) {
       const selectedGenres = convertMovieGenreToMusicGenre(index); // temp variable, not saved
-      console.log(selectedGenres);
+      console.log("GENRES: " + selectedGenres);
       try {
         const recommendations = await searchSpotifyRecommendations(
           selectedGenres
         );
+        console.log("RECOMMENDATIONS: ");
         console.log(recommendations);
       } catch (error) {
         console.error(error);
