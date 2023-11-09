@@ -1,6 +1,6 @@
 import imageNotFound from "../img/image-not-found.png";
 
-function ResultsDisplay({ searchResults, genreIds, handleGenerateClick }) {
+function ResultsDisplay({ searchResults, handleGenerateClick }) {
   return (
     <ul className="results-list">
       {searchResults.map((result, index) => (
@@ -14,8 +14,7 @@ function ResultsDisplay({ searchResults, genreIds, handleGenerateClick }) {
             alt={result.title}
           />
           <div className="result-details">
-            <p>{result.title}</p>
-            <p>{result.id}</p>
+            <p>{result.title}</p> {/*add year in () */}
           </div>
           {/* temp onClick */}
           <button onClick={() => handleGenerateClick(index)}>Generate</button>

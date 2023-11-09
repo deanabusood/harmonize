@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import SearchBar from "./components/SearchBar";
-import ResultsDisplay from "./components/ResultsDisplay";
+import MovieResultsDisplay from "./components/MovieResultsDisplay";
+import SpotifyResultsDisplay from "./components/SpotifyResultsDisplay";
 import genreMap from "./util/genreMap";
 import { searchSpotifyRecommendations } from "./services/ApiService";
 
@@ -20,6 +21,10 @@ function App() {
     return selectedGenres;
   }
 
+  //spotify results
+  const [spotifyResults, setSpotifyResults] = useState([]);
+
+  //spotify api request
   const handleGenerateClick = async (index) => {
     const isConfirmed = window.confirm(
       "Are you sure you want to generate songs similar to this movie?"
@@ -27,38 +32,44 @@ function App() {
 
     if (isConfirmed) {
       const selectedGenres = convertMovieGenreToMusicGenre(index); // temp variable, not saved
-      console.log("GENRES: " + selectedGenres);
       try {
         const recommendations = await searchSpotifyRecommendations(
           selectedGenres
         );
-        console.log("RECOMMENDATIONS: ");
-        console.log(recommendations);
+        updateResultStates(recommendations);
       } catch (error) {
         console.error(error);
       }
     }
   };
 
-  // TO DO
-  //spotify results
-  //spotify api request
-  // create state var to pass into resultsdisplay
+  function updateResultStates(recommendations) {
+    setSpotifyResults(recommendations);
+    setMovieResults([]);
+  }
+
+  const handleAddClick = (index) => {
+    const isConfirmed = window.confirm(
+      "Would you like to add this song to your favorites?"
+    );
+
+    if (isConfirmed) {
+      console.log("SAVED SONG: " + index);
+    }
+  };
 
   return (
     <div className="app-container">
       <SearchBar handleMovieSearch={handleMovieSearch} />
-      {/* for future:
-      if-else {spotifyResults.length > 0 && (
-        <ResultsDisplay
+      {spotifyResults && (
+        <SpotifyResultsDisplay
           searchResults={spotifyResults}
-          handleGenerateClick={handleGenerateClick} - handle add/favorite click
+          handleGenerateClick={handleAddClick}
         />
-      )} */}
-      {movieResults.length > 0 && (
-        <ResultsDisplay
+      )}
+      {movieResults && (
+        <MovieResultsDisplay
           searchResults={movieResults}
-          genreIds={genreIds}
           handleGenerateClick={handleGenerateClick}
         />
       )}
