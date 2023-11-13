@@ -38,7 +38,9 @@ function App() {
 
   function convertMovieGenreToMusicGenre(index) {
     const selectedGenres = genreIds[index].map((id) => genreMap[id]).join(",");
-    return selectedGenres;
+    const uniqueGenres = [...new Set(selectedGenres.split(","))]; // remove duplicates
+    const sanitizedGenres = uniqueGenres.slice(0, 5).join(",");
+    return sanitizedGenres;
   }
 
   //SpotifyResultsDisplay.jsx functionality

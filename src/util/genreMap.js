@@ -1,6 +1,6 @@
 const genreMap = {
   // Movie id -> Spotify genre equivalent
-  28: "electronic, techno",
+  28: "electronic,techno",
   12: "world-music",
   16: "anime",
   35: "comedy",
