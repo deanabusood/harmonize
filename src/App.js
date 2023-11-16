@@ -4,6 +4,7 @@ import MovieResultsDisplay from "./components/MovieResultsDisplay";
 import SpotifyResultsDisplay from "./components/SpotifyResultsDisplay";
 import genreMap from "./util/genreMap";
 import { searchSpotifyRecommendations } from "./services/ApiService";
+import CollectionManager from "./components/CollectionManager";
 
 function App() {
   // state variables and SearchBar.jsx functionality
@@ -49,13 +50,16 @@ function App() {
     setMovieResults([]);
   }
 
+  const [addedSongs, setAddedSongs] = useState([]);
+
   const handleAddClick = (index) => {
     const isConfirmed = window.confirm(
       "Would you like to add this song to your favorites?"
     );
 
     if (isConfirmed) {
-      console.log("SAVED SONG: " + index);
+      const selectedSong = spotifyResults.tracks[index];
+      setAddedSongs([...addedSongs, selectedSong]);
     }
   };
 
@@ -70,6 +74,7 @@ function App() {
   return (
     <div className="app-container">
       <SearchBar handleMovieSearch={handleMovieSearch} />
+
       {movieResults && (
         <MovieResultsDisplay
           searchResults={movieResults}
@@ -82,6 +87,8 @@ function App() {
           handleGenerateClick={handleAddClick}
         />
       )}
+
+      <CollectionManager addedSongs={addedSongs} />
     </div>
   );
 }

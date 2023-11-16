@@ -5,13 +5,14 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  overflow: auto;
 }
 
 /* SearchBar */
 .search-bar {
 }
 
-/* ResultsDisplay */
+/* ResultsDisplay aka current spotify + movie components */
 .results-list {
   display: flex;
   flex-wrap: wrap;
