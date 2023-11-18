@@ -50,6 +50,7 @@ function App() {
     setMovieResults([]);
   }
 
+  //CollectionManager.jsx favorite songs functionality
   const [addedSongs, setAddedSongs] = useState([]);
 
   const handleAddClick = (index) => {
@@ -63,13 +64,27 @@ function App() {
     }
   };
 
+  const handleRemoveClick = (index) => {
+    const isConfirmed = window.confirm(
+      "Would you like to remove this song from your favorites?"
+    );
+    if (isConfirmed) {
+      const updatedSongs = addedSongs.filter((song, i) => i !== index);
+
+      setAddedSongs(updatedSongs);
+    }
+  };
+
   // FOR TESTING:
-  useEffect(() => {
-    console.log("SPOTIFY RESULTS: ", spotifyResults);
-  }, [spotifyResults]);
-  useEffect(() => {
-    console.log("MOVIE RESULTS: ", movieResults);
-  }, [movieResults]);
+  // useEffect(() => {
+  //   console.log("SPOTIFY RESULTS: ", spotifyResults);
+  // }, [spotifyResults]);
+  // useEffect(() => {
+  //   console.log("MOVIE RESULTS: ", movieResults);
+  // }, [movieResults]);
+  // useEffect(() => {
+  //   console.log("fav: ", addedSongs);
+  // }, [addedSongs]);
 
   return (
     <div className="app-container">
@@ -88,7 +103,10 @@ function App() {
         />
       )}
 
-      <CollectionManager addedSongs={addedSongs} />
+      <CollectionManager
+        addedSongs={addedSongs}
+        onRemoveClick={handleRemoveClick}
+      />
     </div>
   );
 }

@@ -16,11 +16,11 @@
   position: absolute;
   top: 40px;
   right: 0;
-  background-color: #fff;
+  background-color: #ffffff;
   border: 1px solid #ccc;
   padding: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  width: 320px;
   max-height: 200px;
   overflow-y: auto;
   border-radius: 4px;
@@ -44,6 +44,22 @@
   margin-bottom: 10px;
   border-bottom: 1px solid #ccc;
   padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.collection-list .song-details {
+  flex: 1;
+}
+
+.collection-list button {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  /* margin-left: 10px; */
 }
 
 .collection-list li:last-child {
@@ -62,4 +78,13 @@
 .collection-list::-webkit-scrollbar-track {
   background-color: #8a8a8a;
   border-radius: 4px;
+}
+
+a {
+  color: rgb(184, 72, 64);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }

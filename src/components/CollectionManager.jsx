@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./CollectionManager.css";
 
-const CollectionManager = ({ addedSongs }) => {
+const CollectionManager = ({ addedSongs, onRemoveClick }) => {
   const [isCollectionVisible, setCollectionVisible] = useState(false);
 
   const toggleCollectionVisibility = () => {
@@ -24,7 +24,19 @@ const CollectionManager = ({ addedSongs }) => {
           ) : (
             <ul>
               {addedSongs.map((song, index) => (
-                <li key={index}>{song.name}</li>
+                <li key={index}>
+                  <span className="song-details">
+                    <a
+                      href={song.external_urls.spotify}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <b>{song.name}</b>
+                    </a>{" "}
+                    by {song.artists.map((artist) => artist.name).join(", ")}
+                  </span>
+                  <button onClick={() => onRemoveClick(index)}>Remove</button>
+                </li>
               ))}
             </ul>
           )}
