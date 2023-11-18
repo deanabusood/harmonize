@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./CollectionManager.css";
+import "../css/CollectionManager.css";
 
 const CollectionManager = ({ addedSongs, onRemoveClick }) => {
   const [isCollectionVisible, setCollectionVisible] = useState(false);

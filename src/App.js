@@ -54,13 +54,20 @@ function App() {
   const [addedSongs, setAddedSongs] = useState([]);
 
   const handleAddClick = (index) => {
-    const isConfirmed = window.confirm(
-      "Would you like to add this song to your favorites?"
+    const selectedSong = spotifyResults.tracks[index];
+    const isAlreadyAdded = addedSongs.some(
+      (song) => song.id === selectedSong.id
     );
+    if (isAlreadyAdded) {
+      alert("This song is already in your favorites!");
+    } else {
+      const isConfirmed = window.confirm(
+        "Would you like to add this song to your favorites?"
+      );
 
-    if (isConfirmed) {
-      const selectedSong = spotifyResults.tracks[index];
-      setAddedSongs([...addedSongs, selectedSong]);
+      if (isConfirmed) {
+        setAddedSongs([...addedSongs, selectedSong]);
+      }
     }
   };
 
@@ -70,7 +77,6 @@ function App() {
     );
     if (isConfirmed) {
       const updatedSongs = addedSongs.filter((song, i) => i !== index);
-
       setAddedSongs(updatedSongs);
     }
   };
