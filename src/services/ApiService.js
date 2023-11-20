@@ -5,7 +5,7 @@ const BASE_URL = "http://localhost:8000"; // server running on port 8000
 //TMDB API
 export async function searchMovies(query) {
   try {
-    const response = await axios.get(`${BASE_URL}/search-movies`, {
+    const response = await axios.get(`${BASE_URL}/movies/search-movies`, {
       params: { query: query },
     });
 
@@ -27,7 +27,7 @@ export async function searchMovies(query) {
 export async function searchSpotifyRecommendations(seedGenres) {
   try {
     const response = await axios.get(
-      `${BASE_URL}/get-spotify-recommendations`,
+      `${BASE_URL}/spotify/get-spotify-recommendations`,
       {
         params: {
           seed_genres: seedGenres,
