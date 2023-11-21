@@ -7,7 +7,7 @@ import { searchSpotifyRecommendations } from "./services/ApiService";
 import CollectionManager from "./components/CollectionManager";
 
 function App() {
-  // state variables and SearchBar.jsx functionality
+  //state variables and SearchBar.jsx functionality
   const [movieResults, setMovieResults] = useState([]);
   const [spotifyResults, setSpotifyResults] = useState([]);
   const [genreIds, setGenreIds] = useState([]);
@@ -25,7 +25,7 @@ function App() {
     );
 
     if (isConfirmed) {
-      const selectedGenres = convertMovieGenreToMusicGenre(index); // temp variable, not saved
+      const selectedGenres = convertMovieGenreToMusicGenre(index); //temp variable, not saved
       try {
         const recommendations = await searchSpotifyRecommendations(
           selectedGenres
@@ -39,7 +39,7 @@ function App() {
 
   function convertMovieGenreToMusicGenre(index) {
     const selectedGenres = genreIds[index].map((id) => genreMap[id]).join(",");
-    const uniqueGenres = [...new Set(selectedGenres.split(","))]; // remove duplicates
+    const uniqueGenres = [...new Set(selectedGenres.split(","))]; //remove duplicates
     const sanitizedGenres = uniqueGenres.slice(0, 5).join(",");
     return sanitizedGenres;
   }
@@ -95,7 +95,6 @@ function App() {
   return (
     <div className="app-container">
       <SearchBar handleMovieSearch={handleMovieSearch} />
-
       {movieResults && (
         <MovieResultsDisplay
           searchResults={movieResults}
@@ -108,7 +107,6 @@ function App() {
           handleGenerateClick={handleAddClick}
         />
       )}
-
       <CollectionManager
         addedSongs={addedSongs}
         onRemoveClick={handleRemoveClick}
@@ -118,3 +116,25 @@ function App() {
 }
 
 export default App;
+
+{
+  /* 
+  import SignUpForm from "./components/SignUpForm";
+import LoginForm from "./components/LoginForm";
+  sign up/log in testing
+<button onClick={handleSignUpClick}>Sign-up</button>{" "}
+      {showSignUp && <SignUpForm />}
+      <button onClick={handleLoginClick}>Login</button>
+      {showLogin && <LoginForm />} 
+      
+  const [showSignUp, setShowSignUp] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+
+  const handleSignUpClick = () => {
+    setShowSignUp(true);
+  };
+
+  const handleLoginClick = () => {
+    setShowLogin(true);
+  };*/
+}
