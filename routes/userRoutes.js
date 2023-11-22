@@ -40,14 +40,14 @@ router.post("/login", async (req, res) => {
     //find username
     const user = await UserModel.findOne({ username });
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "User not found" });
     }
 
     //compare password with hashed password in db
-    try {
-      const passwordMatch = await bcrypt.compare(password, user.password);
-    } catch (error) {
-      console.error("Error comparing passwords:", error);
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
     //create jwt token
@@ -61,7 +61,7 @@ router.post("/login", async (req, res) => {
 
     res.status(200).json({ message: "Login successful", token });
   } catch (error) {
-    console.error(error);
+    console.error("Error logging in:", error);
     res.status(500).json({ message: "Error logging in" });
   }
 });
