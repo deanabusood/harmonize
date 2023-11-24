@@ -10,7 +10,7 @@ function SearchBar({ handleMovieSearch }) {
 
   const handleSearch = async () => {
     try {
-      const { results, genreIds } = await searchMovies(movieTitle); // call ApiService.js
+      const { results, genreIds } = await searchMovies(movieTitle); //call ApiService.js
 
       handleMovieSearch(results, genreIds);
     } catch (error) {
@@ -20,7 +20,12 @@ function SearchBar({ handleMovieSearch }) {
 
   return (
     <div>
-      <input type="text" value={movieTitle} onChange={handleInputChange} />
+      <input
+        id="search-form"
+        type="text"
+        value={movieTitle}
+        onChange={handleInputChange}
+      />
       <button onClick={handleSearch}>Search</button>
     </div>
   );
