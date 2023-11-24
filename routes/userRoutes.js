@@ -16,11 +16,8 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "Username already exists" });
     }
 
-    //hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    //create new user with password
-    const newUser = new UserModel({ username, password: hashedPassword });
+    //create new user with password (prehashed in userModel)
+    const newUser = new UserModel({ username, password });
 
     //save user to db
     await newUser.save();
@@ -40,13 +37,18 @@ router.post("/login", async (req, res) => {
     //find username
     const user = await UserModel.findOne({ username });
     if (!user) {
+      console.log("NO USER FOUND");
       return res.status(401).json({ message: "User not found" });
     }
 
     //compare password with hashed password in db
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(
+      password.trim(),
+      user.password.trim()
+    );
 
     if (!passwordMatch) {
+      console.log("Passwords do not match");
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
@@ -55,14 +57,44 @@ router.post("/login", async (req, res) => {
       { username: user.username },
       process.env.JWT_SECRET,
       {
-        expiresIn: "1h", //expiration time
+        // expiresIn: "1h", //expiration time
       }
     );
-
+    res.cookie("token", token);
     res.status(200).json({ message: "Login successful", token });
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).json({ message: "Error logging in" });
+  }
+});
+
+//post user favorites
+router.post("/favorites/add", async (req, res) => {
+  try {
+    const { username, selectedSong } = req.body;
+
+    //find username
+    const user = await UserModel.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    //check if already in db -> (note: or do it internally)
+    const isAlreadyAdded = user.favorites.some(
+      (song) => song.id === selectedSong.id
+    );
+    if (isAlreadyAdded) {
+      return res.status(400).json({ message: "Song already in favorites" });
+    }
+
+    //otherwise add to db
+    user.favorites.push(selectedSong);
+    await user.save();
+
+    res.status(200).json({ message: "Song added to favorites" });
+  } catch (error) {
+    console.error("Error adding favorite:", error);
+    res.status(500).json({ message: "Error adding favorite" });
   }
 });
 

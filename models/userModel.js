@@ -1,6 +1,27 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
+const songSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  external_urls: {
+    spotify: {
+      type: String,
+      required: true,
+    },
+  },
+  artists: [
+    {
+      name: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+});
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -12,7 +33,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  favorites: [{ type: String }],
+  favorites: [songSchema],
 });
 
 //hash password before saving

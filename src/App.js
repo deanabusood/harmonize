@@ -1,13 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import SearchBar from "./components/SearchBar";
 import MovieResultsDisplay from "./components/MovieResultsDisplay";
 import SpotifyResultsDisplay from "./components/SpotifyResultsDisplay";
 import genreMap from "./util/genreMap";
-import { searchSpotifyRecommendations } from "./services/ApiService";
+import {
+  searchSpotifyRecommendations,
+  addToFavorites,
+} from "./services/ApiService";
 import CollectionManager from "./components/CollectionManager";
+import AuthForm from "./components/AuthForm";
 
 function App() {
   //state variables and SearchBar.jsx functionality
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState(null);
+  const [username, setUsername] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [movieResults, setMovieResults] = useState([]);
   const [spotifyResults, setSpotifyResults] = useState([]);
   const [genreIds, setGenreIds] = useState([]);
@@ -53,7 +61,7 @@ function App() {
   //CollectionManager.jsx favorite songs functionality
   const [addedSongs, setAddedSongs] = useState([]);
 
-  const handleAddClick = (index) => {
+  const handleAddClick = async (index) => {
     const selectedSong = spotifyResults.tracks[index];
     const isAlreadyAdded = addedSongs.some(
       (song) => song.id === selectedSong.id
@@ -66,7 +74,13 @@ function App() {
       );
 
       if (isConfirmed) {
-        setAddedSongs([...addedSongs, selectedSong]);
+        try {
+          await addToFavorites(username, selectedSong, token);
+
+          setAddedSongs([...addedSongs, selectedSong]); //TEMP
+        } catch (error) {
+          console.error("Error adding song to favorites:", error);
+        }
       }
     }
   };
@@ -80,17 +94,25 @@ function App() {
       setAddedSongs(updatedSongs);
     }
   };
+  //AuthForm.jsx functionality
+  const handleModalClick = () => {
+    setIsModalOpen(!isModalOpen);
+  };
 
-  // FOR TESTING:
-  // useEffect(() => {
-  //   console.log("SPOTIFY RESULTS: ", spotifyResults);
-  // }, [spotifyResults]);
-  // useEffect(() => {
-  //   console.log("MOVIE RESULTS: ", movieResults);
-  // }, [movieResults]);
-  // useEffect(() => {
-  //   console.log("fav: ", addedSongs);
-  // }, [addedSongs]);
+  const handleLoginSuccess = (token, username) => {
+    setToken(token);
+    setUsername(username);
+    setIsLoggedIn(true);
+    setIsModalOpen(false);
+    console.log("User logged in, app.js");
+  };
+
+  const handleLogout = () => {
+    setToken("");
+    setUsername("");
+    setIsLoggedIn(false);
+    console.log("User logged out, app.js");
+  };
 
   return (
     <div className="app-container">
@@ -111,30 +133,19 @@ function App() {
         addedSongs={addedSongs}
         onRemoveClick={handleRemoveClick}
       />
+
+      <button onClick={isLoggedIn ? handleLogout : handleModalClick}>
+        {isLoggedIn ? "Logout" : "Open"}
+      </button>
+
+      {isModalOpen && (
+        <AuthForm
+          onClose={handleModalClick}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      )}
     </div>
   );
 }
 
 export default App;
-
-{
-  /* 
-  import SignUpForm from "./components/SignUpForm";
-import LoginForm from "./components/LoginForm";
-  sign up/log in testing
-<button onClick={handleSignUpClick}>Sign-up</button>{" "}
-      {showSignUp && <SignUpForm />}
-      <button onClick={handleLoginClick}>Login</button>
-      {showLogin && <LoginForm />} 
-      
-  const [showSignUp, setShowSignUp] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-
-  const handleSignUpClick = () => {
-    setShowSignUp(true);
-  };
-
-  const handleLoginClick = () => {
-    setShowLogin(true);
-  };*/
-}
