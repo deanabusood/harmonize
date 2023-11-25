@@ -98,6 +98,33 @@ router.post("/favorites/add", async (req, res) => {
   }
 });
 
+//remove user favorite
+router.post("/favorites/remove", async (req, res) => {
+  try {
+    const { username, songId } = req.body;
+
+    //find user
+    const user = await UserModel.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    //filter out song based on songId
+    const updatedFavorites = user.favorites.filter(
+      (song) => song.id !== songId
+    );
+    //update existing favorites
+    user.favorites = updatedFavorites;
+
+    await user.save();
+
+    res.status(200).json({ message: "Song removed from favorites" });
+  } catch (error) {
+    console.error("Error removing favorite:", error);
+    res.status(500).json({ message: "Error removing favorite" });
+  }
+});
+
 //get user favorites
 router.get("/favorites/:username", async (req, res) => {
   try {

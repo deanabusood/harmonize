@@ -23,8 +23,8 @@ const CollectionManager = ({ addedSongs, onRemoveClick }) => {
             <p>No favorites yet.</p>
           ) : (
             <ul>
-              {addedSongs.map((song, index) => (
-                <li key={index}>
+              {addedSongs.map((song) => (
+                <li key={song.id}>
                   <span className="song-details">
                     <a
                       href={song.external_urls.spotify}
@@ -35,7 +35,7 @@ const CollectionManager = ({ addedSongs, onRemoveClick }) => {
                     </a>{" "}
                     by {song.artists.map((artist) => artist.name).join(", ")}
                   </span>
-                  <button onClick={() => onRemoveClick(index)}>Remove</button>
+                  <button onClick={() => onRemoveClick(song.id)}>Remove</button>
                 </li>
               ))}
             </ul>

@@ -2,11 +2,6 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:8000"; //server running on port 8000
 
-// const getToken = () => {
-//   //implement logic
-//   return localStorage.getItem("accessToken"); //get from localstorage
-// };
-
 //TMDB API
 export async function searchMovies(query) {
   try {
@@ -72,6 +67,31 @@ export const addToFavorites = async (username, selectedSong, token) => {
   }
 };
 
+//POST REMOVAL
+export const removeFromFavorites = async (username, songId, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/user/favorites/remove`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ username, songId }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.message);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+//RETRIEVE FAVORITES
 export const getUserFavorites = async (username) => {
   try {
     const response = await axios.get(`${BASE_URL}/user/favorites/${username}`);

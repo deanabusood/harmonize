@@ -7,6 +7,7 @@ import {
   searchSpotifyRecommendations,
   addToFavorites,
   getUserFavorites,
+  removeFromFavorites,
 } from "./services/ApiService";
 import CollectionManager from "./components/CollectionManager";
 import AuthForm from "./components/AuthForm";
@@ -92,32 +93,51 @@ function App() {
     }
   };
 
-  const handleRemoveClick = (index) => {
+  const handleRemoveClick = async (songId) => {
     const isConfirmed = window.confirm(
       "Would you like to remove this song from your favorites?"
     );
+
     if (isConfirmed) {
-      const updatedSongs = addedSongs.filter((song, i) => i !== index);
-      setAddedSongs(updatedSongs);
+      try {
+        if (isLoggedIn) {
+          await removeFromFavorites(username, songId, token);
+        }
+
+        const updatedSongs = addedSongs.filter((song) => song.id !== songId);
+        setAddedSongs(updatedSongs);
+      } catch (error) {
+        console.error("Error removing song from favorites:", error);
+      }
     }
   };
+
   //AuthForm.jsx functionality
   const handleModalClick = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const handleLoginSuccess = (token, username) => {
-    setToken(token);
-    setUsername(username);
-    setIsLoggedIn(true);
-    setIsModalOpen(false);
-    console.log("User logged in, app.js");
+  const handleLoginSuccess = async (token, username) => {
+    try {
+      setToken(token);
+      setUsername(username);
+      setIsLoggedIn(true);
+      setIsModalOpen(false);
+      console.log("User logged in, app.js");
+
+      //fetch user favorites and set state
+      const favorites = await getUserFavorites(username);
+      setAddedSongs(favorites);
+    } catch (error) {
+      console.error("Error fetching user favorites:", error);
+    }
   };
 
   const handleLogout = () => {
     setToken("");
     setUsername("");
     setIsLoggedIn(false);
+    setAddedSongs([]);
     console.log("User logged out, app.js");
   };
 
