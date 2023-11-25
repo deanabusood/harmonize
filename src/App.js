@@ -6,6 +6,7 @@ import genreMap from "./util/genreMap";
 import {
   searchSpotifyRecommendations,
   addToFavorites,
+  getUserFavorites,
 } from "./services/ApiService";
 import CollectionManager from "./components/CollectionManager";
 import AuthForm from "./components/AuthForm";
@@ -74,12 +75,18 @@ function App() {
       );
 
       if (isConfirmed) {
-        try {
-          await addToFavorites(username, selectedSong, token);
+        if (isLoggedIn) {
+          try {
+            await addToFavorites(username, selectedSong, token);
 
-          setAddedSongs([...addedSongs, selectedSong]); //TEMP
-        } catch (error) {
-          console.error("Error adding song to favorites:", error);
+            const updatedFavorites = await getUserFavorites(username);
+
+            setAddedSongs(updatedFavorites);
+          } catch (error) {
+            console.error("Error adding song to favorites:", error);
+          }
+        } else {
+          setAddedSongs([...addedSongs, selectedSong]);
         }
       }
     }

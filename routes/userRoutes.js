@@ -98,4 +98,26 @@ router.post("/favorites/add", async (req, res) => {
   }
 });
 
+//get user favorites
+router.get("/favorites/:username", async (req, res) => {
+  try {
+    const username = req.params.username;
+
+    //find user
+    const user = await UserModel.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    //retrieve favorites
+    const favorites = user.favorites;
+
+    //return favorites
+    res.status(200).json({ favorites });
+  } catch (error) {
+    console.error("Error getting favorites:", error);
+    res.status(500).json({ message: "Error getting favorites" });
+  }
+});
+
 module.exports = router;

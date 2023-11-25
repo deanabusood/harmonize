@@ -71,3 +71,14 @@ export const addToFavorites = async (username, selectedSong, token) => {
     throw new Error(error.message);
   }
 };
+
+export const getUserFavorites = async (username) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/user/favorites/${username}`);
+
+    return response.data.favorites;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
