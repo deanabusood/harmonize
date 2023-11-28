@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "../css/AuthForm.css";
 
 function AuthForm({ onClose, onLoginSuccess }) {
   const [username, setUsername] = useState("");
@@ -27,7 +28,6 @@ function AuthForm({ onClose, onLoginSuccess }) {
         onLoginSuccess(token, username);
       }
     } catch (error) {
-      console.log("ERROR");
       setError(
         `Error ${isSignUp ? "signing up" : "logging in"}. Please try again.`
       );
@@ -45,40 +45,64 @@ function AuthForm({ onClose, onLoginSuccess }) {
   };
 
   return (
-    <div className="auth-container">
-      <h2>{isSignUp ? "Sign Up" : "Log In"}</h2>
-      {error && <p className="error-message">{error}</p>}
-      <form id="auth-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-        />
-        {isSignUp && (
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        )}
+    <div className="auth-modal-overlay">
+      <div className="auth-form-container">
+        <span className="auth-close-button" onClick={onClose}>
+          &times;
+        </span>
 
-        <button type="submit">{isSignUp ? "Sign Up" : "Log In"}</button>
-      </form>
-      <p onClick={toggleMode} style={{ cursor: "pointer", color: "blue" }}>
-        {isSignUp
-          ? "Already have an account? Log In"
-          : "Don't have an account? Sign Up"}
-      </p>
+        <div className="auth-container">
+          <h2>{isSignUp ? "Sign Up" : "Log In"}</h2>
+          {error && <p className="error-message">{error}</p>}
+          <form id="auth-form" onSubmit={handleSubmit}>
+            <div className="auth-field">
+              <label htmlFor="username">Username:</label>
+              <input
+                type="text"
+                id="username"
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="username"
+              />
+            </div>
+            <div className="auth-field">
+              <label htmlFor="password">Password:</label>
+              <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+              />
+            </div>
+            {isSignUp && (
+              <div className="auth-field">
+                <label htmlFor="confirmPassword">Confirm Password:</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+            )}
+            <div className="auth-lower-container">
+              <button type="submit">{isSignUp ? "Sign Up" : "Log In"}</button>
+              <p
+                onClick={toggleMode}
+                style={{ cursor: "pointer", color: "blue" }}
+              >
+                {isSignUp
+                  ? "Already have an account? Log In"
+                  : "Don't have an account? Sign Up"}
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

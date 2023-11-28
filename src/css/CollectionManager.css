@@ -1,7 +1,5 @@
 .collection-manager {
-  position: fixed;
-  top: 20px;
-  right: 20px;
+  margin-right: 20px;
 }
 
 .collection-button {

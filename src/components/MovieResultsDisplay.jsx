@@ -1,4 +1,5 @@
 import imageNotFound from "../img/image-not-found.png";
+import "../css/ResultsDisplay.css";
 
 function MovieResultsDisplay({ searchResults, handleGenerateClick }) {
   if (!searchResults) {

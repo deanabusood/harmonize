@@ -11,13 +11,15 @@ import {
 } from "./services/ApiService";
 import CollectionManager from "./components/CollectionManager";
 import AuthForm from "./components/AuthForm";
+import loginSvg from "./img/log-in.svg";
+import logoutSvg from "./img/log-out.svg";
+import "./index.css";
 
 function App() {
   //state variables and SearchBar.jsx functionality
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState(null);
   const [username, setUsername] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [movieResults, setMovieResults] = useState([]);
   const [spotifyResults, setSpotifyResults] = useState([]);
   const [genreIds, setGenreIds] = useState([]);
@@ -113,6 +115,7 @@ function App() {
   };
 
   //AuthForm.jsx functionality
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleModalClick = () => {
     setIsModalOpen(!isModalOpen);
   };
@@ -123,7 +126,7 @@ function App() {
       setUsername(username);
       setIsLoggedIn(true);
       setIsModalOpen(false);
-      console.log("User logged in, app.js");
+      console.log(username + " logged in, app.js");
 
       //fetch user favorites and set state
       const favorites = await getUserFavorites(username);
@@ -134,16 +137,45 @@ function App() {
   };
 
   const handleLogout = () => {
-    setToken("");
-    setUsername("");
-    setIsLoggedIn(false);
-    setAddedSongs([]);
-    console.log("User logged out, app.js");
+    const isConfirmed = window.confirm("Are you sure you want to log out?");
+
+    if (isConfirmed) {
+      setToken("");
+      setUsername("");
+      setIsLoggedIn(false);
+      setAddedSongs([]);
+      setMovieResults([]);
+      setSpotifyResults([]);
+      setGenreIds([]);
+      console.log(username + " logged out, app.js");
+    }
   };
 
   return (
     <div className="app-container">
+      <div id="navbar-container">
+        <CollectionManager
+          addedSongs={addedSongs}
+          onRemoveClick={handleRemoveClick}
+        />
+
+        <img
+          src={isLoggedIn ? logoutSvg : loginSvg}
+          alt={isLoggedIn ? "Log Out" : "Log In"}
+          style={{ cursor: "pointer" }}
+          onClick={isLoggedIn ? handleLogout : handleModalClick}
+        />
+      </div>
+
+      {isModalOpen && (
+        <AuthForm
+          onClose={handleModalClick}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      )}
+
       <SearchBar handleMovieSearch={handleMovieSearch} />
+
       {movieResults && (
         <MovieResultsDisplay
           searchResults={movieResults}
@@ -154,21 +186,6 @@ function App() {
         <SpotifyResultsDisplay
           searchResults={spotifyResults}
           handleGenerateClick={handleAddClick}
-        />
-      )}
-      <CollectionManager
-        addedSongs={addedSongs}
-        onRemoveClick={handleRemoveClick}
-      />
-
-      <button onClick={isLoggedIn ? handleLogout : handleModalClick}>
-        {isLoggedIn ? "Logout" : "Open"}
-      </button>
-
-      {isModalOpen && (
-        <AuthForm
-          onClose={handleModalClick}
-          onLoginSuccess={handleLoginSuccess}
         />
       )}
     </div>

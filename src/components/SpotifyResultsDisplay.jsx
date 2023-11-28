@@ -1,4 +1,5 @@
 import imageNotFound from "../img/image-not-found.png";
+import "../css/ResultsDisplay.css";
 
 function SpotifyResultsDisplay({ searchResults, handleGenerateClick }) {
   if (!searchResults || !searchResults.tracks) {
