@@ -1,11 +1,18 @@
 import React, { useState } from "react";
-import { searchMovies } from "../services/ApiService";
+import { searchMovies } from "../util/apiHandler";
+import "../css/SearchBar.css";
 
 function SearchBar({ handleMovieSearch }) {
   const [movieTitle, setMovieTitle] = useState("");
 
   const handleInputChange = (event) => {
     setMovieTitle(event.target.value);
+  };
+
+  const handleEnterKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
   };
 
   const handleSearch = async () => {
@@ -19,14 +26,16 @@ function SearchBar({ handleMovieSearch }) {
   };
 
   return (
-    <div>
+    <div className="search-container">
+      <label htmlFor="search-form" className="label"></label>
       <input
         id="search-form"
         type="text"
         value={movieTitle}
         onChange={handleInputChange}
+        placeholder="Enter movie title"
+        onKeyDown={handleEnterKeyPress}
       />
-      <button onClick={handleSearch}>Search</button>
     </div>
   );
 }

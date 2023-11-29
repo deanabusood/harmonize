@@ -5,10 +5,10 @@ import SpotifyResultsDisplay from "./components/SpotifyResultsDisplay";
 import genreMap from "./util/genreMap";
 import {
   searchSpotifyRecommendations,
-  addToFavorites,
+  addToUserFavorites,
   getUserFavorites,
-  removeFromFavorites,
-} from "./services/ApiService";
+  removeFromUserFavorites,
+} from "./util/apiHandler";
 import CollectionManager from "./components/CollectionManager";
 import AuthForm from "./components/AuthForm";
 import loginSvg from "./img/log-in.svg";
@@ -80,7 +80,7 @@ function App() {
       if (isConfirmed) {
         if (isLoggedIn) {
           try {
-            await addToFavorites(username, selectedSong, token);
+            await addToUserFavorites(username, selectedSong, token);
 
             const updatedFavorites = await getUserFavorites(username);
 
@@ -103,7 +103,7 @@ function App() {
     if (isConfirmed) {
       try {
         if (isLoggedIn) {
-          await removeFromFavorites(username, songId, token);
+          await removeFromUserFavorites(username, songId, token);
         }
 
         const updatedSongs = addedSongs.filter((song) => song.id !== songId);

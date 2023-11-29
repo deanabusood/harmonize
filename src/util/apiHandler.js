@@ -44,7 +44,7 @@ export async function searchSpotifyRecommendations(seedGenres) {
 }
 
 //POST USER FAVORITES
-export const addToFavorites = async (username, selectedSong, token) => {
+export const addToUserFavorites = async (username, selectedSong, token) => {
   try {
     const response = await fetch(`${BASE_URL}/user/favorites/add`, {
       method: "POST",
@@ -68,7 +68,7 @@ export const addToFavorites = async (username, selectedSong, token) => {
 };
 
 //POST REMOVAL
-export const removeFromFavorites = async (username, songId, token) => {
+export const removeFromUserFavorites = async (username, songId, token) => {
   try {
     const response = await fetch(`${BASE_URL}/user/favorites/remove`, {
       method: "POST",
