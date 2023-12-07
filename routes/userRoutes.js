@@ -3,6 +3,7 @@ const router = express.Router();
 const UserModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const verifyToken = require("../middleware/authMiddleware");
 require("dotenv").config();
 
 //register new user
@@ -54,10 +55,10 @@ router.post("/login", async (req, res) => {
 
     //create jwt token
     const token = jwt.sign(
-      { username: user.username },
+      { userId: user._id, username: user.username },
       process.env.JWT_SECRET,
       {
-        // expiresIn: "1h", //expiration time
+        // expiresIn: "1h",
       }
     );
     res.cookie("token", token);
@@ -69,17 +70,18 @@ router.post("/login", async (req, res) => {
 });
 
 //post user favorites
-router.post("/favorites/add", async (req, res) => {
+router.post("/favorites/add", verifyToken, async (req, res) => {
   try {
-    const { username, selectedSong } = req.body;
+    const { selectedSong } = req.body;
+    const { username } = req.user;
 
-    //find username
+    //find user
     const user = await UserModel.findOne({ username });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    //check if already in db -> (note: or do it internally)
+    //check if already in db
     const isAlreadyAdded = user.favorites.some(
       (song) => song.id === selectedSong.id
     );
@@ -99,9 +101,10 @@ router.post("/favorites/add", async (req, res) => {
 });
 
 //remove user favorite
-router.post("/favorites/remove", async (req, res) => {
+router.post("/favorites/remove", verifyToken, async (req, res) => {
   try {
-    const { username, songId } = req.body;
+    const { songId } = req.body;
+    const { username } = req.user;
 
     //find user
     const user = await UserModel.findOne({ username });
@@ -113,9 +116,8 @@ router.post("/favorites/remove", async (req, res) => {
     const updatedFavorites = user.favorites.filter(
       (song) => song.id !== songId
     );
-    //update existing favorites
+    //update existing favorites and save to db
     user.favorites = updatedFavorites;
-
     await user.save();
 
     res.status(200).json({ message: "Song removed from favorites" });
@@ -126,20 +128,18 @@ router.post("/favorites/remove", async (req, res) => {
 });
 
 //get user favorites
-router.get("/favorites/:username", async (req, res) => {
+router.get("/favorites", verifyToken, async (req, res) => {
   try {
-    const username = req.params.username;
+    const { username } = req.user;
 
     //find user
     const user = await UserModel.findOne({ username });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
-    //retrieve favorites
+    //fetch favorites
     const favorites = user.favorites;
 
-    //return favorites
     res.status(200).json({ favorites });
   } catch (error) {
     console.error("Error getting favorites:", error);

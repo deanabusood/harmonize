@@ -44,7 +44,7 @@ export async function searchSpotifyRecommendations(seedGenres) {
 }
 
 //POST USER FAVORITES
-export const addToUserFavorites = async (username, selectedSong, token) => {
+export const addToUserFavorites = async (selectedSong, token) => {
   try {
     const response = await fetch(`${BASE_URL}/user/favorites/add`, {
       method: "POST",
@@ -52,7 +52,7 @@ export const addToUserFavorites = async (username, selectedSong, token) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ username, selectedSong }),
+      body: JSON.stringify({ selectedSong }),
     });
 
     if (!response.ok) {
@@ -68,7 +68,7 @@ export const addToUserFavorites = async (username, selectedSong, token) => {
 };
 
 //POST REMOVAL
-export const removeFromUserFavorites = async (username, songId, token) => {
+export const removeFromUserFavorites = async (songId, token) => {
   try {
     const response = await fetch(`${BASE_URL}/user/favorites/remove`, {
       method: "POST",
@@ -76,7 +76,7 @@ export const removeFromUserFavorites = async (username, songId, token) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ username, songId }),
+      body: JSON.stringify({ songId }),
     });
 
     if (!response.ok) {
@@ -92,9 +92,13 @@ export const removeFromUserFavorites = async (username, songId, token) => {
 };
 
 //RETRIEVE FAVORITES
-export const getUserFavorites = async (username) => {
+export const getUserFavorites = async (token) => {
   try {
-    const response = await axios.get(`${BASE_URL}/user/favorites/${username}`);
+    const response = await axios.get(`${BASE_URL}/user/favorites`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     return response.data.favorites;
   } catch (error) {

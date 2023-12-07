@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "./components/SearchBar";
 import MovieResultsDisplay from "./components/MovieResultsDisplay";
 import SpotifyResultsDisplay from "./components/SpotifyResultsDisplay";
@@ -18,8 +18,6 @@ import "./index.css";
 function App() {
   //state variables and SearchBar.jsx functionality
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [token, setToken] = useState(null);
-  const [username, setUsername] = useState("");
   const [movieResults, setMovieResults] = useState([]);
   const [spotifyResults, setSpotifyResults] = useState([]);
   const [genreIds, setGenreIds] = useState([]);
@@ -37,7 +35,7 @@ function App() {
     );
 
     if (isConfirmed) {
-      const selectedGenres = convertMovieGenreToMusicGenre(index); //temp variable, not saved
+      const selectedGenres = convertMovieGenreToMusicGenre(index);
       try {
         const recommendations = await searchSpotifyRecommendations(
           selectedGenres
@@ -51,7 +49,7 @@ function App() {
 
   function convertMovieGenreToMusicGenre(index) {
     const selectedGenres = genreIds[index].map((id) => genreMap[id]).join(",");
-    const uniqueGenres = [...new Set(selectedGenres.split(","))]; //remove duplicates
+    const uniqueGenres = [...new Set(selectedGenres.split(","))]; //remove duplicate genres
     const sanitizedGenres = uniqueGenres.slice(0, 5).join(",");
     return sanitizedGenres;
   }
@@ -64,6 +62,23 @@ function App() {
 
   //CollectionManager.jsx favorite songs functionality
   const [addedSongs, setAddedSongs] = useState([]);
+
+  const fetchUserFavorites = async () => {
+    try {
+      const storedToken = localStorage.getItem("token");
+
+      if (storedToken) {
+        setIsLoggedIn(true);
+        const favorites = await getUserFavorites(storedToken);
+        setAddedSongs(favorites);
+      } else {
+        localStorage.removeItem("token"); //test
+        setIsLoggedIn(false);
+      }
+    } catch (error) {
+      console.error("Error fetching user favorites:", error);
+    }
+  };
 
   const handleAddClick = async (index) => {
     const selectedSong = spotifyResults.tracks[index];
@@ -78,18 +93,17 @@ function App() {
       );
 
       if (isConfirmed) {
-        if (isLoggedIn) {
-          try {
-            await addToUserFavorites(username, selectedSong, token);
+        try {
+          const storedToken = localStorage.getItem("token");
 
-            const updatedFavorites = await getUserFavorites(username);
-
-            setAddedSongs(updatedFavorites);
-          } catch (error) {
-            console.error("Error adding song to favorites:", error);
+          if (storedToken) {
+            await addToUserFavorites(selectedSong, storedToken);
+            await fetchUserFavorites();
+          } else {
+            setAddedSongs([...addedSongs, selectedSong]);
           }
-        } else {
-          setAddedSongs([...addedSongs, selectedSong]);
+        } catch (error) {
+          console.error("Error adding song to favorites:", error);
         }
       }
     }
@@ -102,12 +116,16 @@ function App() {
 
     if (isConfirmed) {
       try {
-        if (isLoggedIn) {
-          await removeFromUserFavorites(username, songId, token);
-        }
+        const storedToken = localStorage.getItem("token");
 
-        const updatedSongs = addedSongs.filter((song) => song.id !== songId);
-        setAddedSongs(updatedSongs);
+        if (isLoggedIn && storedToken) {
+          await removeFromUserFavorites(songId, storedToken);
+          const updatedSongs = addedSongs.filter((song) => song.id !== songId);
+          setAddedSongs(updatedSongs);
+        } else {
+          const updatedSongs = addedSongs.filter((song) => song.id !== songId); //not logged in
+          setAddedSongs(updatedSongs);
+        }
       } catch (error) {
         console.error("Error removing song from favorites:", error);
       }
@@ -120,17 +138,15 @@ function App() {
     setIsModalOpen(!isModalOpen);
   };
 
-  const handleLoginSuccess = async (token, username) => {
+  const handleLoginSuccess = async (token) => {
     try {
-      setToken(token);
-      setUsername(username);
+      localStorage.setItem("token", token);
+
       setIsLoggedIn(true);
       setIsModalOpen(false);
-      console.log(username + " logged in, app.js");
 
       //fetch user favorites and set state
-      const favorites = await getUserFavorites(username);
-      setAddedSongs(favorites);
+      await fetchUserFavorites();
     } catch (error) {
       console.error("Error fetching user favorites:", error);
     }
@@ -140,16 +156,19 @@ function App() {
     const isConfirmed = window.confirm("Are you sure you want to log out?");
 
     if (isConfirmed) {
-      setToken("");
-      setUsername("");
+      localStorage.removeItem("token");
+
       setIsLoggedIn(false);
       setAddedSongs([]);
       setMovieResults([]);
       setSpotifyResults([]);
       setGenreIds([]);
-      console.log(username + " logged out, app.js");
     }
   };
+
+  useEffect(() => {
+    fetchUserFavorites();
+  }, []);
 
   return (
     <div className="app-container">

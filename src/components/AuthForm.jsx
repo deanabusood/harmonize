@@ -25,7 +25,7 @@ function AuthForm({ onClose, onLoginSuccess }) {
       onClose();
       if (!isSignUp) {
         const token = response.data.token;
-        onLoginSuccess(token, username);
+        onLoginSuccess(token);
       }
     } catch (error) {
       setError(
