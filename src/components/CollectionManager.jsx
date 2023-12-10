@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../css/CollectionManager.css";
+import SpotifyAuth from "./SpotifyAuth";
 
 const CollectionManager = ({ addedSongs, onRemoveClick }) => {
   const [isCollectionVisible, setCollectionVisible] = useState(false);
@@ -40,6 +41,7 @@ const CollectionManager = ({ addedSongs, onRemoveClick }) => {
               ))}
             </ul>
           )}
+          <SpotifyAuth addedSongs={addedSongs} />
         </div>
       )}
     </div>

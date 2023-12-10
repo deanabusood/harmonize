@@ -61,7 +61,8 @@
 }
 
 .collection-list li:last-child {
-  border-bottom: none;
+  /* border-bottom: none; */
+  border-color: black;
 }
 
 .collection-list::-webkit-scrollbar {
