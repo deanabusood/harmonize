@@ -25,11 +25,12 @@ function MovieResultsDisplay({ searchResults, handleGenerateClick }) {
             />
           </a>
           <div className="result-details">
-            <p>{result.title}</p> {/*add year in () */}
+            <p>{result.title}</p>
             {result.release_date && <p>({result.release_date})</p>}
           </div>
-          {/* temp onClick */}
-          <button onClick={() => handleGenerateClick(index)}>Generate</button>
+          <button onClick={() => handleGenerateClick(index)}>
+            Generate songs
+          </button>
         </li>
       ))}
     </ul>

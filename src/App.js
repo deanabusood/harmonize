@@ -13,46 +13,74 @@ import CollectionManager from "./components/CollectionManager";
 import AuthForm from "./components/AuthForm";
 import loginSvg from "./img/log-in.svg";
 import logoutSvg from "./img/log-out.svg";
+import repeatSvg from "./img/repeat.svg";
 import "./index.css";
 
 function App() {
   //state variables and SearchBar.jsx functionality
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [movieResults, setMovieResults] = useState([]);
+  const [selectedMovieGenres, setSelectedMovieGenres] = useState([]);
+  const [lastSelectedMovieIndex, setLastSelectedMovieIndex] = useState(null);
+  const [hasGeneratedSongs, setHasGeneratedSongs] = useState(false);
   const [spotifyResults, setSpotifyResults] = useState([]);
-  const [genreIds, setGenreIds] = useState([]);
-
-  const handleMovieSearch = (results, genres) => {
-    setMovieResults(results);
-    setGenreIds(genres);
-    setSpotifyResults([]); //if user updates current movie query
-  };
 
   //MovieResultsDisplay.jsx functionality
-  const handleGenerateClick = async (index) => {
+  const handleMovieSearch = (results, genres, index) => {
+    setMovieResults(results);
+    setSelectedMovieGenres(genres);
+    setSpotifyResults([]);
+    if (hasGeneratedSongs) {
+      setHasGeneratedSongs(false); //reset flag to hide repeat button
+    }
+    setLastSelectedMovieIndex(index); //store last movie index for repeat button
+  };
+
+  function convertMovieGenreToMusicGenre(index) {
+    const selectedGenres = selectedMovieGenres[index]
+      .map((id) => genreMap[id])
+      .join(",");
+    const uniqueGenres = [...new Set(selectedGenres.split(","))]; //remove duplicate genres
+    const sanitizedGenres = uniqueGenres.slice(0, 5).join(",");
+    return sanitizedGenres;
+  }
+  //used in handleGenerateClick
+  const confirmGenerate = async (index) => {
     const isConfirmed = window.confirm(
       "Are you sure you want to generate songs similar to this movie?"
     );
 
     if (isConfirmed) {
-      const selectedGenres = convertMovieGenreToMusicGenre(index);
-      try {
-        const recommendations = await searchSpotifyRecommendations(
-          selectedGenres
-        );
-        updateResultStates(recommendations);
-      } catch (error) {
-        console.error(error);
-      }
+      await generateRecommendations(index);
     }
   };
 
-  function convertMovieGenreToMusicGenre(index) {
-    const selectedGenres = genreIds[index].map((id) => genreMap[id]).join(",");
-    const uniqueGenres = [...new Set(selectedGenres.split(","))]; //remove duplicate genres
-    const sanitizedGenres = uniqueGenres.slice(0, 5).join(",");
-    return sanitizedGenres;
-  }
+  const generateRecommendations = async (index) => {
+    const selectedGenres = convertMovieGenreToMusicGenre(index);
+    try {
+      const recommendations = await searchSpotifyRecommendations(
+        selectedGenres
+      );
+      updateResultStates(recommendations);
+
+      if (!hasGeneratedSongs) {
+        setHasGeneratedSongs(true);
+      }
+
+      setLastSelectedMovieIndex(index);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleGenerateClick = async (index) => {
+    if (!hasGeneratedSongs) {
+      await confirmGenerate(index);
+    } else if (index !== null) {
+      await generateRecommendations(index);
+    } else {
+      console.error("No movie selected to repeat recommendations.");
+    }
+  };
 
   //SpotifyResultsDisplay.jsx functionality
   function updateResultStates(recommendations) {
@@ -61,6 +89,7 @@ function App() {
   }
 
   //CollectionManager.jsx favorite songs functionality
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [addedSongs, setAddedSongs] = useState([]);
 
   const fetchUserFavorites = async () => {
@@ -162,7 +191,7 @@ function App() {
       setAddedSongs([]);
       setMovieResults([]);
       setSpotifyResults([]);
-      setGenreIds([]);
+      setSelectedMovieGenres([]);
     }
   };
 
@@ -184,16 +213,25 @@ function App() {
           style={{ cursor: "pointer" }}
           onClick={isLoggedIn ? handleLogout : handleModalClick}
         />
+
+        {isModalOpen && (
+          <AuthForm
+            handleModalClick={handleModalClick}
+            handleLoginSuccess={handleLoginSuccess}
+          />
+        )}
       </div>
 
-      {isModalOpen && (
-        <AuthForm
-          onClose={handleModalClick}
-          onLoginSuccess={handleLoginSuccess}
-        />
-      )}
-
       <SearchBar handleMovieSearch={handleMovieSearch} />
+      {hasGeneratedSongs &&
+        (movieResults.length !== 0 || spotifyResults.length !== 0) && (
+          <button
+            onClick={() => handleGenerateClick(lastSelectedMovieIndex)}
+            className="repeat-button"
+          >
+            <img src={repeatSvg} alt="Repeat Recommendations" />
+          </button>
+        )}
 
       {movieResults && (
         <MovieResultsDisplay
@@ -204,7 +242,7 @@ function App() {
       {spotifyResults && (
         <SpotifyResultsDisplay
           searchResults={spotifyResults}
-          handleGenerateClick={handleAddClick}
+          handleAddClick={handleAddClick}
         />
       )}
     </div>

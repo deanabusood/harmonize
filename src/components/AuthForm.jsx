@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../css/AuthForm.css";
 
-function AuthForm({ onClose, onLoginSuccess }) {
+function AuthForm({ handleModalClick, handleLoginSuccess }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -22,10 +22,10 @@ function AuthForm({ onClose, onLoginSuccess }) {
         username,
         password,
       });
-      onClose();
+      handleModalClick();
       if (!isSignUp) {
         const token = response.data.token;
-        onLoginSuccess(token);
+        handleLoginSuccess(token);
       }
     } catch (error) {
       setError(
@@ -47,7 +47,7 @@ function AuthForm({ onClose, onLoginSuccess }) {
   return (
     <div className="auth-modal-overlay">
       <div className="auth-form-container">
-        <span className="auth-close-button" onClick={onClose}>
+        <span className="auth-close-button" onClick={handleModalClick}>
           &times;
         </span>
 

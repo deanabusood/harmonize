@@ -1,7 +1,7 @@
 import imageNotFound from "../img/image-not-found.png";
 import "../css/ResultsDisplay.css";
 
-function SpotifyResultsDisplay({ searchResults, handleGenerateClick }) {
+function SpotifyResultsDisplay({ searchResults, handleAddClick }) {
   if (!searchResults || !searchResults.tracks) {
     return <> </>; // needed to prevent empty data
   }
@@ -28,7 +28,7 @@ function SpotifyResultsDisplay({ searchResults, handleGenerateClick }) {
             <p>{result.name}</p>
             <p>{result.artists.map((artist) => artist.name).join(", ")}</p>
           </div>
-          <button onClick={() => handleGenerateClick(index)}>
+          <button onClick={() => handleAddClick(index)}>
             Add to Favorites
           </button>
         </li>
