@@ -196,7 +196,10 @@ function App() {
   };
 
   useEffect(() => {
-    fetchUserFavorites();
+    const token = localStorage.getItem('token');
+    if(token){
+      fetchUserFavorites();
+    }
   }, []);
 
   return (
