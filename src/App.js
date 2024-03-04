@@ -222,6 +222,8 @@ function App() {
         )}
       </div>
 
+
+      <div id="search-container">
       <SearchBar handleMovieSearch={handleMovieSearch} />
       {hasGeneratedSongs &&
         (movieResults.length !== 0 || spotifyResults.length !== 0) && (
@@ -232,7 +234,9 @@ function App() {
             <img src={repeatSvg} alt="Repeat Recommendations" />
           </button>
         )}
-
+        </div>
+      
+      <div id="result-container">
       {movieResults && (
         <MovieResultsDisplay
           searchResults={movieResults}
@@ -245,6 +249,7 @@ function App() {
           handleAddClick={handleAddClick}
         />
       )}
+      </div>
     </div>
   );
 }
