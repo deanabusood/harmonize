@@ -12,7 +12,8 @@
 }
 
 .auth-form-container {
-  background-color: #fff;
+  background-color: rgb(54, 59, 68);
+  color: rgb(246 247 249);
   padding: 60px;
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 1);
@@ -62,23 +63,22 @@
   margin-bottom: 5px;
 }
 
-#auth-lower-container {
+.auth-lower-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  /* gap: 20px; */
 }
 
-#auth-lower-container button {
-  background-color: #3f4c55;
-  color: #fff;
+.auth-lower-container button {
+  background-color: #151d24;
+  color: rgb(246 247 249);
   border: none;
   padding: 10px 15px;
   cursor: pointer;
 }
 
-#auth-lower-container p {
+.auth-lower-container p {
+  margin: auto;
+  padding-top: 20px;
   cursor: pointer;
-  color: blue;
 }

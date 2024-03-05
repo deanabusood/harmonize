@@ -93,7 +93,6 @@ function AuthForm({ handleModalClick, handleLoginSuccess }) {
               <button type="submit">{isSignUp ? "Sign Up" : "Log In"}</button>
               <p
                 onClick={toggleMode}
-                style={{ cursor: "pointer", color: "blue" }}
               >
                 {isSignUp
                   ? "Already have an account? Log In"
