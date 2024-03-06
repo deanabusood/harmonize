@@ -11,3 +11,8 @@
 #search-form:focus {
   border-color: #000000;
 }
+
+.search-container{
+  font-family: Optimistic Display, -apple-system, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  color: rgb(35 39 47);
+}
