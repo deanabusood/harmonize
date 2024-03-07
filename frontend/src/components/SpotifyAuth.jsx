@@ -17,7 +17,7 @@ const SpotifyAuth = ({ addedSongs }) => {
 
   const handleAuth = () => {
     //pop out window to not reset main display
-    const authUrl = "http://localhost:8000/spotify/authorize?show_dialog=true";
+    const authUrl = "https://harmonize-server.onrender.com/spotify/authorize?show_dialog=true";
     const spotifyAuthWindow = window.open(
       authUrl,
       "SpotifyAuth",
@@ -45,7 +45,7 @@ const SpotifyAuth = ({ addedSongs }) => {
 
     axios
       .post(
-        "http://localhost:8000/spotify/create-playlist",
+        "https://harmonize-server.onrender.com/spotify/create-playlist",
         { songIds },
         {
           headers: {

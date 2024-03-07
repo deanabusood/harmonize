@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8000"; //server running on port 8000
+const BASE_URL = "https://harmonize-server.onrender.com"; //server running on port 8000
 
 //TMDB API
 export async function searchMovies(query) {

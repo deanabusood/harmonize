@@ -18,7 +18,7 @@ function AuthForm({ handleModalClick, handleLoginSuccess }) {
 
     try {
       const endpoint = isSignUp ? "/user/register" : "/user/login";
-      const response = await axios.post(`http://localhost:8000${endpoint}`, {
+      const response = await axios.post(`https://harmonize-server.onrender.com${endpoint}`, {
         username,
         password,
       });
