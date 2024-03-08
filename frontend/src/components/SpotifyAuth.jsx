@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 
 const SpotifyAuth = ({ addedSongs }) => {
   const [authorized, setAuthorized] = useState(false);
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     const token = Cookies.get("spotifyToken");
@@ -17,7 +18,7 @@ const SpotifyAuth = ({ addedSongs }) => {
 
   const handleAuth = () => {
     //pop out window to not reset main display
-    const authUrl = "https://harmonize-server.onrender.com/spotify/authorize?show_dialog=true";
+    const authUrl = `${BASE_URL}/spotify/authorize?show_dialog=true`;
     const spotifyAuthWindow = window.open(
       authUrl,
       "SpotifyAuth",
@@ -45,7 +46,7 @@ const SpotifyAuth = ({ addedSongs }) => {
 
     axios
       .post(
-        "https://harmonize-server.onrender.com/spotify/create-playlist",
+        `${BASE_URL}/spotify/create-playlist`,
         { songIds },
         {
           headers: {

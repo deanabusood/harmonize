@@ -8,6 +8,7 @@ function AuthForm({ handleModalClick, handleLoginSuccess }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,7 +19,7 @@ function AuthForm({ handleModalClick, handleLoginSuccess }) {
 
     try {
       const endpoint = isSignUp ? "/user/register" : "/user/login";
-      const response = await axios.post(`https://harmonize-server.onrender.com${endpoint}`, {
+      const response = await axios.post(`${BASE_URL}${endpoint}`, {
         username,
         password,
       });
