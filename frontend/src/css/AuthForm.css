@@ -57,6 +57,8 @@
 }
 
 #auth-form input {
+  font-family: Optimistic Display, -apple-system, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  color: rgb(0, 0, 0);
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
