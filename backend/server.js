@@ -7,7 +7,7 @@ const spotifyRoutes = require("./routes/spotifyRoutes");
 const userRoutes = require("./routes/userRoutes");
 require("dotenv").config();
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 const app = express();
 
 app.use(cors());
