@@ -116,7 +116,7 @@ router.get("/callback", async (req, res) => {
     const userAccessToken = await getUserAccessToken(code);
     res.cookie("spotifyToken", userAccessToken);
 
-    res.redirect("http://localhost:3000");
+    res.redirect("https://harmonized.vercel.app");
   } catch (error) {
     console.error(error);
     res.status(500).send("Failed to authenticate");
