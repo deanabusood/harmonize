@@ -6,11 +6,10 @@ import React, { useEffect, useState } from "react";
 
 const SpotifyAuth = ({ addedSongs }) => {
   const [authorized, setAuthorized] = useState(false);
-  const BASE_URL = process.env.REACT_APP_BACKEND_URL;
+  const BASE_URL = "https://harmonized-server.vercel.app";
 
   useEffect(() => {
     const token = Cookies.get("spotifyToken");
-    // console.log(token);
     if (token) {
       setAuthorized(true);
     }

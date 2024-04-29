@@ -72,7 +72,7 @@ const getUserAccessToken = async (code) => {
       params: {
         grant_type: "authorization_code",
         code,
-        redirect_uri: "https://harmonize-server.onrender.com/spotify/callback",
+        redirect_uri: "https://harmonized-server.vercel.app/spotify/callback",
       },
     });
 
@@ -99,7 +99,7 @@ const getUserId = async (accessToken) => {
 //AUTH FORM
 router.get("/authorize", (req, res) => {
   const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
-  const REDIRECT_URI = "https://harmonize-server.onrender.com/spotify/callback";
+  const REDIRECT_URI = "https://harmonized-server.vercel.app/spotify/callback";
   const scopes = "playlist-modify-private";
 
   const authorizeUrl = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&scope=${encodeURIComponent(
